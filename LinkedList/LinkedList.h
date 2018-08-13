@@ -21,7 +21,7 @@ public:
 		return Count == 0;
 	}
 
-	void PushBackByNode(Node * curNode, Data newData) {
+	void PushBackByNode(Node * curNode, Data * newData) {
 		Node * newNode = new Node(newData);
 		Node * nextNode = curNode->nNode;
 
@@ -36,11 +36,11 @@ public:
 		Count++;
 	}
 
-	void PushBack(Data newData) {
+	void PushBack(Data * newData) {
 		PushBackByNode(tail, newData);
 	}
 
-	void PushFront(Data newData) {
+	void PushFront(Data * newData) {
 		PushBackByNode(head, newData);
 	}
 
@@ -83,7 +83,7 @@ public:
 	void PrintAllData() {
 		Node * ptr = head->nNode;
 		while (ptr != null) {
-			printf("id : %5d, date : %9d\n", ptr->data.id, ptr->data.date);
+			ptr->data->printData();
 			ptr = ptr->nNode;
 		}
 	}

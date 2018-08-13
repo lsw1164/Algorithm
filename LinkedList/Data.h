@@ -6,5 +6,9 @@ public:
 	Data() : id(0), date(0) {}
 	Data(int _id, int _date) : id(_id), date(_date) {}
 	~Data() {}
+
+	void printData() {
+		printf("id : %5d, date : %9d\n", id, date);
+	}
 };
 

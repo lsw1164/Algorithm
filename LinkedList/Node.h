@@ -1,14 +1,14 @@
-#pragma once
+#include <iostream>
 #include "Data.h"
 #define null 0
+using namespace std;
 
 class Node {
 public:
-	Data data;
+	Data * data;
 	Node * pNode;
 	Node * nNode;
-	Node(): nNode(null), pNode(null) {}
-	Node(Data _data) : data(_data), nNode(null), pNode(null) {}
-	~Node(){}
+	Node() : data(null), nNode(null), pNode(null) {}
+	Node(Data * _data) : data(_data), nNode(null), pNode(null) {}
+	~Node() {}
 };
-
