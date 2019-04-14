@@ -1,7 +1,77 @@
 #include <iostream>
+#include <stdlib.h>
 #include <time.h>
 
 using namespace std;
+
+//interface
+bool AscendingOrder(int &n1, int &n2);
+bool DescendingOrder(int &n1, int &n2);
+void PushRandomNums(int * arr, int len);
+
+template <typename T>
+void MergeSort(T * arr, T * buf, int first, int last, bool(*compare)(T & t1, T & t2));
+
+template <typename T>
+void Merge(T * arr, T * buf, int first, int last, bool(*compare)(T & t1, T & t2));
+
+template <typename T>
+void PrintArr(T * arr, int first, int last);
+
+//implement
+bool AscendingOrder(int &n1, int &n2) {
+	return n1 < n2;
+}
+
+bool DescendingOrder(int &n1, int &n2) {
+	return n1 > n2;
+}
+
+template <typename T>
+void MergeSort(T * arr, T * buf, int first, int last, bool(*compare)(T & t1, T & t2)) {
+	int len = last - first + 1;
+	if (len <= 1) return;
+
+	int mid = (first + last) / 2;
+
+	MergeSort(arr, buf, first, mid, compare);
+	MergeSort(arr, buf, mid + 1, last, compare);
+	Merge(arr, buf, first, last, compare);
+}
+
+template <typename T>
+void Merge(T * arr, T * buf, int first, int last, bool(*compare)(T & t1, T & t2)) {
+	int len = last - first + 1;
+	int mid = (first + last) / 2;
+	int left = first;
+	int right = mid + 1;
+
+	for (int i = first; i <= last; i++) {
+		if (left > mid) buf[i] = arr[right++];
+		else if (right > last) buf[i] = arr[left++];
+		else {
+			//custom compare	
+			bool isPositive = compare(arr[left], arr[right]);
+			buf[i] = isPositive ? arr[left++] : arr[right++];
+		}
+	}
+
+	for (int i = first; i <= last; i++) {
+		arr[i] = buf[i];
+	}
+
+//	printf("Len : %3d, (Idx : %3d to %3d ) Merge result : ", len, first, last);
+//	PrintArr(arr, first, last);
+}
+
+
+template <typename T>
+void PrintArr(T * arr, int first, int last) {
+	for (int i = first; i <= last; i++) {
+		cout << arr[i] << " ";
+	}
+	cout << '\n';
+}
 
 void PushRandomNums(int * arr, int len) {
 	srand(time(NULL));
@@ -10,64 +80,28 @@ void PushRandomNums(int * arr, int len) {
 	}
 }
 
-void PrintArray(int * arr, int len) {
-	for (int i = 0; i < len; i++) {
-		printf("%3d ", arr[i]);
-	} printf("\n");
-}
-
-void PrintArray(int * arr, int left, int right) {
-	for (int i = left; i <= right; i++) {
-		printf("%3d ", arr[i]);
-	} printf("\n");
-}
-
-void Merge(int * arr, int left, int right) {
-	int len = right - left + 1;
-	int mid = (right + left) / 2;
-	int * temp = new int[len];
-	for (int i = 0, l = left, r = mid + 1; i < len; i++) {
-		if (l > mid) temp[i] = arr[r++];
-		else if (r > right) temp[i] = arr[l++];
-		else {
-			temp[i] = (arr[l] < arr[r]) ? arr[l++] : arr[r++];
-		}
-	}
-	for (int i = 0, l = left; i < len; i++) {
-		arr[l++] = temp[i];
-	}
-	free(temp);
-	printf("Len : %3d, (Idx : %3d to %3d ) Merge result : ",len, left, right);
-	PrintArray(arr, left, right);
-}
-
-void MergeSort(int * arr, int left, int right) {
-	int len = right - left + 1;
-	if (len <= 1) return;
-
-	int mid = (left + right) / 2;
-
-	MergeSort(arr, left, mid);
-	MergeSort(arr, mid + 1, right);
-	Merge(arr, left, right);
-}
-
 int main(void) {
-	int len = 15;
-	int * input = new int[len];
-	PushRandomNums(input, len);
-	puts("-----------------------------");
-	puts("before sorting...");
-	puts("-----------------------------");
-	PrintArray(input, len);
-	puts("-----------------------------");
-
-	MergeSort(input, 0, len - 1);
-	puts("-----------------------------");
-	puts("afrer sorting...");
-	puts("-----------------------------");
-	PrintArray(input, len);
-	puts("-----------------------------");
+	const int count = 20;
+	int * arr = new int[count];
+	int * buf = new int[count];
+	PushRandomNums(arr, count);
+	cout << "\n------------------------------------------\n";
+	cout << "\n-----------before sorting-----------\n";
+	cout << "\n------------------------------------------\n";
+	PrintArr(arr, 0, count-1);
+	cout << "\n------------------------------------------\n";
+	MergeSort(arr, buf, 0, count-1, AscendingOrder);
+	cout << "\n------------------------------------------\n";
+	cout << "\n------after sorting with AscendingOrder------\n";
+	cout << "\n------------------------------------------\n";
+	PrintArr(arr, 0, count-1);
+	cout << "\n------------------------------------------\n";
+	MergeSort(arr, buf, 0, count-1, DescendingOrder);
+	cout << "\n------------------------------------------\n";
+	cout << "\n------after sorting with DescendingOrder------\n";
+	cout << "\n------------------------------------------\n";
+	PrintArr(arr, 0, count-1);
+	cout << "\n------------------------------------------\n";
 
 	return 0;
 }
