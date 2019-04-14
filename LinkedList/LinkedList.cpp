@@ -23,7 +23,9 @@ class LinkedList {
 			dummy = tail = new Node<T>();
 			count = 0;
 		}
-		~LinkedList<T>(){}
+		~LinkedList<T>(){
+			Clear();
+		}
 
 		bool IsEmpty() {
 			return count == 0;
@@ -55,6 +57,10 @@ class LinkedList {
 
 		Node<T> * DeleteByNode(Node<T> * curNode) {
 
+			if(IsEmpty()) {
+				return null;
+			}
+
 			Node<T> * beforeNode = curNode->prev;
 			Node<T> * nextNode = curNode->next;
 
@@ -64,8 +70,9 @@ class LinkedList {
 			} else {
 				tail = beforeNode;
 			}
-
+			delete curNode;
 			count--;
+			return nextNode;
 		}
 
 		T PopFront() {
